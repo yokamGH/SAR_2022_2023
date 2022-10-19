@@ -1,24 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package broker_channel.channels;
 
  
 import java.io.IOException;
-import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author georg
- */
+
 public class ChannelImplem extends Channel{
     
     private CircularBuffer outputBuffer; //Output Buffer
     private CircularBuffer inputBuffer; //Input Buffer
-    private int size;
+    private int size; //Size of buffers
     private boolean isConnected = true;
     
     public ChannelImplem(CircularBuffer inputBuffer, CircularBuffer outputBuffer, int size){
@@ -27,10 +17,9 @@ public class ChannelImplem extends Channel{
         this.size = size;
     }
     
-    
     public int write(byte[] bytes, int offset, int length) throws IOException {
         if (bytes == null){
-            throw new NullPointerException("The message to write is null");
+            throw new NullPointerException("Task A: the message to write is null");
         }
         if (length > size){
             System.out.println("Error: the message length is greater than the buffer size");
@@ -41,7 +30,7 @@ public class ChannelImplem extends Channel{
             while(i < length){
                 while(outputBuffer.full()){
                     try {
-                        System.out.println("The buffer length is full.....");
+                        System.out.println("TaskA: the buffer length is full.....");
                         outputBuffer.wait();
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt(); 
@@ -52,7 +41,7 @@ public class ChannelImplem extends Channel{
                 i++;
             }
             outputBuffer.notify();
-            System.out.println("Message send "+i);
+            System.out.println("TaskA: message of length "+i+" is written");
             return i;
         }
     }
@@ -64,7 +53,7 @@ public class ChannelImplem extends Channel{
             while(i < length){
                 while(inputBuffer.empty()){
                     try {
-                        System.out.println("The buffer is empty....");
+                        System.out.println("TaskB: the buffer is empty...");
                         inputBuffer.wait();
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt(); 
@@ -75,7 +64,7 @@ public class ChannelImplem extends Channel{
                 i++;
             }
             inputBuffer.notify();
-            System.out.println("Message read");
+            System.out.println("TaskB: reading completed");
             return i;
         }
     }
@@ -87,46 +76,4 @@ public class ChannelImplem extends Channel{
     public boolean disconnected() {
         return !isConnected;
     }
-      
-    
-    /*private final int size = 256; //Size of the buffer
-    private CircularBuffer messages = new CircularBuffer(size); //Output buffer
-    private CircularBuffer inputBuffer = new CircularBuffer(size); //Input Buffer
-    private Semaphore messageAvailable = new Semaphore(0);
-    private Semaphore slotAvailable = new Semaphore(size);
-    private Semaphore senderMutex = new Semaphore(1);
-    private Semaphore receiverMutex = new Semaphore(1);
-    
-    private int in=0, out=0;
-    
-    public int write(byte[] bytes, int offset, int length) throws IOException {
-        try {
-            if (bytes == null){
-                throw new NullPointerException("The message to send is null");
-            }
-            slotAvailable.acquire(length); 
-            senderMutex.acquire();
-            
-            // Writing the message in the CircularBuffer
-            for (int i=0; i<length; i++){
-                messages.push(bytes[offset+i]);
-            }
-            
-            senderMutex.release();
-            messageAvailable.release();
-            
-            return length; //The size of the written message
-            
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ChannelImplem.class.getName()).log(Level.SEVERE, null, ex);
-            return -1; //When some errors occured
-        }
-    
-    }
-    
-    public int read(byte[] bytes, int offset, int length) throws IOException {
-		return 0;
-    }*/
-    
-    
 }

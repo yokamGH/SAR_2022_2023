@@ -6,14 +6,10 @@ package broker_channel.tasks;
 
 import broker_channel.brokers.Broker;
 import broker_channel.channels.Channel;
-import broker_channel.channels.ChannelImplem;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- *
- * @author georg
- */
+
 public class TaskB extends Thread {
     
     private Broker broker;
@@ -27,7 +23,7 @@ public class TaskB extends Thread {
     }
     
     public void run(){
-        //Accepter les connexions 
+        // Connection with TaskA
         Channel channel = broker.connect(name, port);
         byte[] bytesRecus = new byte[12];
 	try {
@@ -36,6 +32,6 @@ public class TaskB extends Thread {
             System.out.println("je suis déconnecté"); //WHY ??
 	}
 	String msgString = new String(bytesRecus, StandardCharsets.UTF_8);
-	System.out.println("message reçu : " + msgString);       
+	System.out.println("Message reçu : " + msgString);       
     }
 }
