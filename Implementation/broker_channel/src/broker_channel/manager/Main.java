@@ -18,7 +18,7 @@ public class Main {
         
         Broker broker = new BrokerImplem("SAR_PC");
         TaskA taskA = new TaskA(2035, broker); 
-        TaskB taskB = new TaskB(2035, broker, "SAR_PC");
+        TaskB taskB = new TaskB(20, broker, "SAR_PC");
         // TaskA send the message "Hello World !" to TaskB
         taskA.start();
         // TaskB read and print the sent message

@@ -63,9 +63,9 @@ public class BrokerImplem extends Broker {
 	 *
      */
     
-    public Channel connect(String name, int port) {
+    public Channel connect(String name, int port){
         synchronized(this){
-            receiverChannel = new ChannelImplem(buffer2, buffer1, buffSize); //Les buffers sont croisés
+            
             while(senderChannel == null){
                 try {
                     System.out.println("TaskB: waiting the connection acceptance...");
@@ -76,9 +76,11 @@ public class BrokerImplem extends Broker {
                 }
             }
             //Port number or the name are wrong 
-            if ((port != this.port) || (name != this.name)){
+            if ((port != this.port) || (!name.equals(this.name))){
                 System.out.println("TaskB: Invalid connection parameters");
-                receiverChannel.disconnect(); //Logging out   
+            }
+            else {
+                receiverChannel = new ChannelImplem(buffer2, buffer1, buffSize);
             }
             notify();
         } 

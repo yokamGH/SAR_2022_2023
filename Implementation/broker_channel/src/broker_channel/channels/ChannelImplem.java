@@ -27,7 +27,7 @@ public class ChannelImplem extends Channel{
         }
         synchronized(outputBuffer){
             int i =0;
-            while(i < length){
+            while(i < length && !disconnected()){
                 while(outputBuffer.full()){
                     try {
                         System.out.println("TaskA: the buffer length is full.....");
@@ -50,7 +50,7 @@ public class ChannelImplem extends Channel{
     public int read(byte[] bytes, int offset, int length) throws IOException {
 	synchronized(inputBuffer){
             int i = 0;
-            while(i < length){
+            while(i < length && !disconnected()){
                 while(inputBuffer.empty()){
                     try {
                         System.out.println("TaskB: the buffer is empty...");

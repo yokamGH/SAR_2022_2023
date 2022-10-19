@@ -32,27 +32,28 @@ The given classes, written in Java:
 ## Spécifications 
 
 - Le channel est bidirectionnel, il permet de lire et d'écrire des octets 
-- La méthode `read()` permet de lire les octects du buffer **bytes**. Cette méthode est bloquante quand il n'y a aucun octet à lire, elle devient non bloquante quand des octets à lire sont disponibles. 
-- La méthode `read()` renvoie le nombre d'octets lus et renvoie -1 si la lecture a échoué
-- La méthode `write()` écrit les octets dans le buffer et lève une exceptin en cas d'échec
+- La méthode `read()` permet de lire les octects du buffer **bytes**. Cette méthode est bloquante quand il n'y a aucun octet à lire
+- La méthode `read()` renvoie le nombre d'octets lus 
+- La méthode `write()` écrit les octets dans le buffer et renvoie le nombre d'octets écrits
 - La méthode `write()` envoie les octets en flots, elle est FIFO et loseless
-- Il faut lever l'exception chez un utilisateur qui essaye de lire les octets, si le second utilisateur auquel il est connecté interompt la connexion de façon inopinée 
-- La méthode `accept()` autorise les connexions sur un port donné en générant un nouveau channel. Elle est bloquante en attente d'éventuelles connexions. 
-- La méthode `connect()` permet de se connecter à un Broker dont le nom et le port sont connus en générant un nouveau channel. C'est une méthode bloquante
+- La méthode `accept()` autorise les connexions sur un port donné en générant un nouveau channel de communication. Elle est bloquante en attente d'éventuelles connexions. 
+- La méthode `connect()` permet de se connecter à un Broker dont le nom et le port sont connus en générant un nouveau channel. C'est une méthode bloquante en attente des autorisations de connexion
 
 
 
 ## Conception 
 
-- La communication est réalisée en utilisant deux objets de la classe Task. Chaque instance Task possède un objet Broker. 
-- Nous avons deux instances de la classe Broker, un par tâche. 
-- Le premier broker autorise des connexions sur un port donné en utilisant la méthode accept(port) et attend jusqu'à la prochaine connexion
-- Le deuxième Broker se connecte en utilisant le nom et le numéro de port ouvert du premier Broker 
-- Un objet Channel est associé à chaque instance Broker, soit deux instances Channel au total. 
-- Les deux instances de la classe Channel se partagent deux buffers correspondant à des instances de la classe CircularBuffer
+- La communication est réalisée en utilisant deux objets de la classe Task. 
+- Les deux instances Task possède un objet Broker commun. 
+- La première tâche autorise des connexions sur un port donné en utilisant la méthode **accept(port)** du broker, et attend jusqu'à la prochaine connexion
+- La deuxième tâche se connecte en utilisant le nom et le numéro de port de la connexion ouverte précédemment 
+- Un objet Channel est associé à chaque tâche, soit deux instances Channel au total. 
+- Les deux instances de la classe Channel se partagent deux buffers croisés correspondant à des instances de la classe CircularBuffer
 
 
 ## Implémentation
+
+Voir le code dans le dossier broker_channel
 
 
 

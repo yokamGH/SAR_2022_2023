@@ -23,7 +23,7 @@ public class TaskA extends Thread {
             channel.write("Hello World!".getBytes(), 0, 12);
             System.out.println("Message envoyé : Hello World!");
 	} catch (IOException e) {
-            System.out.println("je suis déconnecté");
+            System.out.println("Offline");
 	}        
     }
     

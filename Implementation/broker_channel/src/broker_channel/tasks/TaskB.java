@@ -22,16 +22,21 @@ public class TaskB extends Thread {
         this.name = name;
     }
     
+    @Override
     public void run(){
-        // Connection with TaskA
-        Channel channel = broker.connect(name, port);
-        byte[] bytesRecus = new byte[12];
-	try {
-            channel.read(bytesRecus, 0, 12);
-	} catch (IOException e) {
-            System.out.println("je suis déconnecté"); //WHY ??
-	}
-	String msgString = new String(bytesRecus, StandardCharsets.UTF_8);
-	System.out.println("Message reçu : " + msgString);       
+        Channel channel = broker.connect(name, port); // Connection with TaskA
+        if (channel == null){
+            System.out.println("TaskB: Connection with TaskA failed");
+        }
+        else {
+            byte[] bytesRecus = new byte[12];
+            try {
+                channel.read(bytesRecus, 0, 12);
+            } catch (IOException e) {
+                System.out.println("Offline"); 
+            }
+            String msgString = new String(bytesRecus, StandardCharsets.UTF_8);
+            System.out.println("Message reçu : " + msgString);
+        }          
     }
 }
